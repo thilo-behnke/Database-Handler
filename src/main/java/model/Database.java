@@ -10,7 +10,9 @@ public class Database {
         USERS, CUSTOMERS, EMPLOYEES;
 
         public List<String> getColumns(Table table){
-            return Arrays.stream(Columns.values()).filter(x -> x.table != table).map(Enum::name).collect(Collectors.toList());
+            return Arrays.stream(Columns.values())
+                    .filter(x -> x.table != table)
+                    .map(Enum::name).collect(Collectors.toList());
         }
 
         public enum Columns {

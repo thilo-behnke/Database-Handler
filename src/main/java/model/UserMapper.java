@@ -20,7 +20,7 @@ public class UserMapper {
             userMapping.setColumns(
                     new ArrayList<>(
                             Arrays.asList(
-                                    new DatabaseEntity.Column("id", DatabaseEntity.Column.Types.SERIAL),
+                                    new DatabaseEntity.Column("u_id", DatabaseEntity.Column.Types.SERIAL),
                                     new DatabaseEntity.Column("type", DatabaseEntity.Column.Types.INTEGER),
                                     new DatabaseEntity.Column("name", DatabaseEntity.Column.Types.TEXT)
                             )
@@ -37,7 +37,7 @@ public class UserMapper {
             employeeMapping.setColumns(
                     new ArrayList<>(
                             Arrays.asList(
-                                    new DatabaseEntity.Column("id", DatabaseEntity.Column.Types.SERIAL),
+                                    new DatabaseEntity.Column("e_id", DatabaseEntity.Column.Types.SERIAL),
                                     new DatabaseEntity.Column("salary", DatabaseEntity.Column.Types.INTEGER),
                                     new DatabaseEntity.Column("location", DatabaseEntity.Column.Types.TEXT)
                             )
@@ -46,7 +46,7 @@ public class UserMapper {
             employeeMapping.setAttributes(
                     new ArrayList<>(
                             Arrays.asList(
-                                    "id",
+                                    "e_id",
                                     "name",
                                     "salary",
                                     "location"
@@ -64,7 +64,7 @@ public class UserMapper {
             customerMapping.setColumns(
                     new ArrayList<>(
                             Arrays.asList(
-                                    new DatabaseEntity.Column("id", DatabaseEntity.Column.Types.SERIAL),
+                                    new DatabaseEntity.Column("c_id", DatabaseEntity.Column.Types.SERIAL),
                                     new DatabaseEntity.Column("rank", DatabaseEntity.Column.Types.INTEGER)
                             )
                     )
@@ -72,7 +72,7 @@ public class UserMapper {
             customerMapping.setAttributes(
                     new ArrayList<>(
                             Arrays.asList(
-                                    "id",
+                                    "c_id",
                                     "name",
                                     "rank"
                             )
