@@ -5,11 +5,13 @@ import model.User;
 import java.sql.*;
 import java.util.*;
 
+// TODO: Add JDoc
 public class DatabaseHelper {
 
     private static DatabaseHelper dbHelper;
     private Connection connection;
 
+    // TODO: Look for better solution, e.g. enum
     public static final String USER_TABLE = "users";
     private static final String USER_COLUMN_ID = "id";
     private static final String USER_COLUMN_NAME = "name";
@@ -33,6 +35,7 @@ public class DatabaseHelper {
         return dbHelper;
     }
 
+    // TODO: Add maven support for managing drivers + libraries
     public void connectToDatabase() {
         try {
             connection = DriverManager.getConnection(
@@ -173,6 +176,7 @@ public class DatabaseHelper {
         }
     }
 
+    // TODO: Check if method is still relevant
     public void insertUser(ArrayList<User.Customer> userList) {
         StringBuilder sb = new StringBuilder();
         sb
@@ -204,6 +208,7 @@ public class DatabaseHelper {
         }
     }
 
+    // TODO: Check if method is still relevant
     public Map<Integer, ArrayList<String>> getUserMap() {
         Map<Integer, ArrayList<String>> userMap = new HashMap<>();
         try {

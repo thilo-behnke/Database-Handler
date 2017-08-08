@@ -2,6 +2,7 @@ package model;
 
 import database.DatabaseEntity;
 
+// TODO: Add JDoc
 public class User {
 
     int id;
@@ -18,6 +19,7 @@ public class User {
         this.name = name;
     }
 
+    // TODO: Check if method is still relevant
     public int getId() {
         return id;
     }
@@ -26,7 +28,7 @@ public class User {
         return name;
     }
 
-
+    // TODO: Check if method is still relevant
     public DatabaseEntity getDBMapping() {
         return UserMapper.getUserMapping(this);
     }

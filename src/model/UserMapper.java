@@ -12,6 +12,7 @@ public class UserMapper {
     private static DatabaseEntity employeeMapping;
     private static DatabaseEntity customerMapping;
 
+    // TODO: Check privacy level
     public static DatabaseEntity getUserMapping(User user) {
         if (userMapping == null) {
             userMapping = new DatabaseEntity();

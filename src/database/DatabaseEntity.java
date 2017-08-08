@@ -2,6 +2,7 @@ package database;
 
 import java.util.List;
 
+// TODO: Add JDoc
 public class DatabaseEntity {
 
     private String table;

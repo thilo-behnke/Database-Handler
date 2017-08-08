@@ -1,5 +1,6 @@
 package model;
 
+// TODO: Add JDoc
 public class UserBuilder {
 
     private User user;
@@ -8,11 +9,13 @@ public class UserBuilder {
         user = new User();
     }
 
+    // TODO: Check if method is still relevant
     public UserBuilder setId(int id) {
         user.id = id;
         return this;
     }
 
+    // TODO: Check privacy levels
     public UserBuilder setName(String name) {
         user.name = name;
         return this;
