@@ -34,11 +34,10 @@ public class DatabaseHelper {
         return dbHelper;
     }
 
-    // TODO: Add maven support for managing drivers + libraries
-    public void connectToDatabase() {
+    public void connectToDatabase(String url, String user, String password) {
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql:mydb", "postgres", "admin"
+                    url, user, password
             );
         } catch (SQLException ex) {
             ex.printStackTrace();

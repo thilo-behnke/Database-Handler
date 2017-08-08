@@ -16,3 +16,4 @@ out/production/Database-Handler/model/UserBuilder$EmployeeBuilder.class
 out/production/Database-Handler/model/UserBuilder.class
 out/production/Database-Handler/model/UserMapper.class
 *.class
+.idea/uiDesigner.xml

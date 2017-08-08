@@ -17,7 +17,7 @@ public class MainClass {
 
     public static void main(String args[]) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.connectToDatabase();
+        dbHelper.connectToDatabase("jdbc:postgresql:mydb", "postgres", "admin");
         dbHelper.createTable(UserMapper.getUserTableStructure());
         dbHelper.createTable(UserMapper.getEmployeeTableStructure());
         dbHelper.createTable(UserMapper.getCustomerTableStructure());
