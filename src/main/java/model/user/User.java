@@ -1,12 +1,14 @@
-package model;
+package model.user;
 
-import database.DatabaseEntity;
+import model.Database;
 
 // TODO: Add JDoc
 public class User {
 
     int id;
     String name;
+    Database.Table type;
+
 
     User() {
     }
@@ -26,6 +28,10 @@ public class User {
 
     public String getName() {
         return name;
+    }
+
+    public Database.Table getType() {
+        return type;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class User {
         Employee(User user) {
             this.setId(user.id);
             this.setName(user.name);
+            this.type = Database.Table.EMPLOYEES;
         }
 
         public int getSalary() {
@@ -73,6 +80,7 @@ public class User {
         Customer(User user) {
             this.setId(user.id);
             this.setName(user.name);
+            this.type = Database.Table.CUSTOMERS;
         }
 
         public int getRank() {

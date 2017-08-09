@@ -1,4 +1,6 @@
-package model;
+package model.user;
+
+import model.Database;
 
 // TODO: Add JDoc
 public class UserBuilder {
