@@ -8,7 +8,7 @@ import java.util.List;
 public class DatabaseEntity {
 
     private Database.Table table;
-    private List<Database.Table.Columns> columns;
+    private List<Database.Table.Column> columns;
     private List<String> attributes;
 
     public Database.Table getTable() {
@@ -19,11 +19,11 @@ public class DatabaseEntity {
         this.table = table;
     }
 
-    public void setColumns(List<Database.Table.Columns> columns) {
+    public void setColumns(List<Database.Table.Column> columns) {
         this.columns = columns;
     }
 
-    public List<Database.Table.Columns> getColumns() {
+    public List<Database.Table.Column> getColumns() {
         return this.columns;
     }
 

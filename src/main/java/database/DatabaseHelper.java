@@ -1,9 +1,8 @@
 package database;
 
 import model.Database;
-import model.Database.Table.Columns;
+import model.Database.Table.Column;
 import model.user.User;
-import model.user.UserMapper;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,11 +10,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static model.Database.Table.USERS;
+import static model.Database.Table.getColumns;
+
 // TODO: Add JDoc
 public class DatabaseHelper {
 
     private static DatabaseHelper dbHelper;
     private Connection connection;
+
+    private String url;
+    private String db;
+    private String user;
+    private String password;
 
     private DatabaseHelper() {
     }
@@ -27,11 +34,15 @@ public class DatabaseHelper {
         return dbHelper;
     }
 
-    public void connectToDatabase(String url, String user, String password) {
+    public void connectToDatabase(String url, String db, String user, String password) {
         try {
             connection = DriverManager.getConnection(
-                    url, user, password
+                    url + db, user, password
             );
+            this.url = url;
+            this.db = db;
+            this.user = user;
+            this.password = password;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -41,7 +52,7 @@ public class DatabaseHelper {
         for (DatabaseEntity e : entities) {
             try {
                 DatabaseMetaData dmb = connection.getMetaData();
-                ResultSet resultSet = dmb.getTables("mydb", "public", e.getTable().name().toLowerCase(), null);
+                ResultSet resultSet = dmb.getTables(db, "public", e.getTable().name().toLowerCase(), null);
                 if (resultSet.next()) {
                     dropTable(resultSet.getString("table_name"));
                 }
@@ -69,7 +80,7 @@ public class DatabaseHelper {
                     .append(entity.getTable())
                     .append(" (");
             boolean isFirst = true;
-            for (Columns c : entity.getColumns()) {
+            for (Column c : entity.getColumns()) {
                 if (isFirst) {
                     isFirst = false;
                 } else {
@@ -87,46 +98,55 @@ public class DatabaseHelper {
     }
 
     public void insertUser(User user) {
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(
-//                    getInsertQuery(user.getType()), Statement.RETURN_GENERATED_KEYS);
-//            // set user data
-//            DatabaseEntity databaseEntity = UserMapper.getEntityMapping(user.getType());
-//            statement.setString(1, employee.getName());
-//            statement.setInt(2, User.UserType.Employee.id);
-//            int affectedRows = statement.executeUpdate();
-//            if (affectedRows == 0) {
-//                throw new SQLException("Creating User data failed!");
-//            }
-//            ResultSet generatedKeys = statement.getGeneratedKeys();
-//            generatedKeys.next();
-//            int id = generatedKeys.getInt(1);
-//            statement = connection.prepareStatement(
-//                    getInsertQuery(EMPLOYEE_TABLE));
-//            statement.setInt(1, id);
-//            statement.setInt(2, employee.getSalary());
-//            statement.setString(3, employee.getLocation());
-//            affectedRows = statement.executeUpdate();
-//            if (affectedRows == 0) {
-//                throw new SQLException("Creating Customer data failed!");
-//            }
-//        } catch (SQLException ex) {
-//            ex.printStackTrace();
-//        }
+        try {
+            PreparedStatement statement = connection.prepareStatement(
+                    getInsertQuery(user.getType()), Statement.RETURN_GENERATED_KEYS);
+            setQueryParameters(statement, user, user.getType());
+            int affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating data failed!");
+            }
+            statement = connection.prepareStatement(
+                    getInsertQuery(USERS), Statement.RETURN_GENERATED_KEYS);
+            setQueryParameters(statement, user, USERS);
+            affectedRows = statement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Creating data failed!");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void setQueryParameters(PreparedStatement statement, User user, Database.Table table){
+        int counter = 1;
+        try {
+            for (Column c : getColumns(table)) {
+                if (c.getType().equals(Database.Types.SERIAL) || c.getType().equals(Database.Types.INTEGER)) {
+                    statement.setInt(counter, (int) c.getAttribute(user));
+                } else if (c.getType().equals(Database.Types.TEXT)) {
+                    statement.setString(counter, (String) c.getAttribute(user));
+                }
+                counter++;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private String getInsertQuery(Database.Table table) {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ").append(table.name()).append(" (");
-        for (Iterator<Columns> it = table.getColumns(table).iterator(); it.hasNext(); ) {
-            Columns c = it.next();
+        for (Iterator<Database.Table.Column> it = getColumns(table).iterator(); it.hasNext(); ) {
+            Database.Table.Column c = it.next();
             sb.append(c.name());
             while (it.hasNext()) {
+                c = it.next();
                 sb.append(", ").append(c.name());
             }
         }
         sb.append(")").append("VALUES (");
-        for (int i = 0; i < table.getColumns(table).size(); i++) {
+        for (int i = 0; i < getColumns(table).size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -154,7 +174,7 @@ public class DatabaseHelper {
                     if (resultSetTable.getString("table_name").equals(table.name().toLowerCase())) {
                         ResultSet resultSetColumns = getColumnSchema(table);
                         List<String> columnsReference =
-                                table.getColumns(table)
+                                getColumns(table)
                                         .stream()
                                         .map(Enum::name)
                                         .map(x -> x = x.toLowerCase())
@@ -178,7 +198,7 @@ public class DatabaseHelper {
 
     private ResultSet getTableSchema(Database.Table table) {
         try {
-            return connection.getMetaData().getTables("mydb", "public", table.name().toLowerCase(), null);
+            return connection.getMetaData().getTables(db, "public", table.name().toLowerCase(), null);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -187,7 +207,7 @@ public class DatabaseHelper {
 
     private ResultSet getColumnSchema(Database.Table table) {
         try {
-            return connection.getMetaData().getColumns("mydb", "public", table.name().toLowerCase(), null);
+            return connection.getMetaData().getColumns(db, "public", table.name().toLowerCase(), null);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

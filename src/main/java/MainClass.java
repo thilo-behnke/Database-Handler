@@ -20,7 +20,7 @@ public class MainClass {
 
     public static void main(String args[]) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
-        dbHelper.connectToDatabase("jdbc:postgresql:mydb", "postgres", "admin");
+        dbHelper.connectToDatabase("jdbc:postgresql:", "mydb", "postgres", "admin");
         dbHelper.createTables(
                 UserMapper.getEntityMapping(USERS),
                 UserMapper.getEntityMapping(CUSTOMERS),

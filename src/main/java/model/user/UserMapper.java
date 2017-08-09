@@ -3,7 +3,9 @@ package model.user;
 import database.DatabaseEntity;
 import model.Database;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static model.Database.Table.*;
 
@@ -21,7 +23,7 @@ public class UserMapper {
         userMapping.setTable(table);
         userMapping.setColumns(
                 // TODO: Refactor into static method
-                table.getColumns(table)
+                getColumns(table)
         );
         return userMapping;
     }

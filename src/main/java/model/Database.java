@@ -12,7 +12,7 @@ import static model.Database.Types.*;
 public class Database {
 
     public interface ITable {
-        public User getTableEntity(List<String> attributes);
+        User getTableEntity(List<String> attributes);
     }
 
     public enum Types {
@@ -47,21 +47,65 @@ public class Database {
             }
         };
 
-        public List<Columns> getColumns(Table table) {
-            return Arrays.stream(Columns.values())
+        public static List<Column> getColumns(Table table) {
+            return Arrays.stream(Column.values())
                     .filter(x -> x.table.equals(table))
                     .collect(Collectors.toList());
         }
 
-        public enum Columns {
-            U_ID(USERS, SERIAL), U_NAME(USERS, TEXT), U_TYPE(USERS, INTEGER),
-            C_ID(CUSTOMERS, SERIAL), C_RANK(CUSTOMERS, INTEGER),
-            E_ID(EMPLOYEES, SERIAL), E_SALARY(EMPLOYEES, INTEGER), E_LOCATION(EMPLOYEES, TEXT);
+        public interface IColumn {
+            Object getAttribute(User user);
+        }
+
+        public enum Column implements IColumn {
+            U_ID(USERS, SERIAL) {
+                @Override
+                public Object getAttribute(User user) {
+                    return user.getId();
+                }
+            }, U_NAME(USERS, TEXT) {
+                @Override
+                public Object getAttribute(User user) {
+                    return user.getName();
+                }
+            }, U_TYPE(USERS, INTEGER) {
+                @Override
+                public Object getAttribute(User user) {
+                    return user.getType().ordinal();
+                }
+            },
+            C_ID(CUSTOMERS, SERIAL) {
+                @Override
+                public Object getAttribute(User user) {
+                    return user.getId();
+                }
+            }, C_RANK(CUSTOMERS, INTEGER) {
+                @Override
+                public Object getAttribute(User user) {
+                    return ((User.Customer)user).getRank();
+                }
+            },
+            E_ID(EMPLOYEES, SERIAL) {
+                @Override
+                public Object getAttribute(User user) {
+                    return user.getId();
+                }
+            }, E_SALARY(EMPLOYEES, INTEGER) {
+                @Override
+                public Object getAttribute(User user) {
+                    return ((User.Employee)user).getSalary();
+                }
+            }, E_LOCATION(EMPLOYEES, TEXT) {
+                @Override
+                public Object getAttribute(User user) {
+                    return ((User.Employee)user).getLocation();
+                }
+            };
 
             private Table table;
             private Types type;
 
-            Columns(Table table, Types type) {
+            Column(Table table, Types type) {
                 this.table = table;
                 this.type = type;
             }
