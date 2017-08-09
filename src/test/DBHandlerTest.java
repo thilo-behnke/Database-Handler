@@ -6,6 +6,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static model.Database.Table.*;
 
 public class DBHandlerTest {
@@ -37,5 +39,8 @@ public class DBHandlerTest {
                         .createCustomer()
                         .setRank(2).getCustomer();
         dbHelper.insertUser(customer);
+
+        List<User> userList = dbHelper.searchUserInDB(CUSTOMERS, null);
+        Assert.assertTrue(userList.size() == 1);
     }
 }

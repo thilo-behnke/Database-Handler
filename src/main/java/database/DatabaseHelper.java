@@ -1,13 +1,12 @@
 package database;
 
+import javafx.scene.control.Tab;
 import model.Database;
 import model.Database.Table.Column;
 import model.user.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static model.Database.Table.USERS;
@@ -118,7 +117,7 @@ public class DatabaseHelper {
         }
     }
 
-    private void setQueryParameters(PreparedStatement statement, User user, Database.Table table){
+    private void setQueryParameters(PreparedStatement statement, User user, Database.Table table) {
         int counter = 1;
         try {
             for (Column c : getColumns(table)) {
@@ -153,6 +152,61 @@ public class DatabaseHelper {
             sb.append("?");
         }
         sb.append(");");
+        return sb.toString();
+    }
+
+    public List<User> searchUserInDB(Database.Table table, Map<Database.Table.Column, String> filterMap) {
+        try {
+            Statement statement = connection.createStatement();
+            List<Column> selectList = new ArrayList<>();
+            selectList.addAll(getColumns(table));
+            selectList.addAll(getColumns(USERS));
+            List<Database.Table> joinList = new ArrayList<>();
+            joinList.add(USERS);
+            ResultSet resultSet = statement.executeQuery(createSelectQuery(table, filterMap, joinList));
+            List<User> resultList = new ArrayList<>();
+            while (resultSet.next()) {
+                List<String> attributes = new ArrayList<>();
+                for (Database.Table.Column c : getColumns(table)) {
+                    attributes.add(resultSet.getString(c.name()));
+                }
+                for (Database.Table.Column c : getColumns(USERS)) {
+                    attributes.add(resultSet.getString(c.name()));
+                }
+                resultList.add(table.getTableEntity(attributes));
+            }
+            return resultList;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private String createSelectQuery(Database.Table table, List<String>selectList, Map<Database.Table.Column, String> selectMap, List<Database.Table> joinTable) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT * FROM ").append(table);
+        if (joinTable == null) sb.append(";");
+        else {
+            for(Database.Table t : joinTable){
+                sb.append(" JOIN ").append(t).append(" ON ")
+                        .append(table.getTableKey())
+                        .append(" = ")
+                        .append(t.getTableKey());
+            }
+            if(selectMap == null) sb.append(";");
+            else {
+                boolean isFirst = true;
+                for (Map.Entry<Database.Table.Column, String> entry : selectMap.entrySet()) {
+                    sb.append(" WHERE ");
+                    if (!isFirst) sb.append(" AND ");
+                    sb.append(entry.getKey())
+                            .append(" = ")
+                            .append(entry.getValue());
+                    if (isFirst) isFirst = false;
+                }
+                sb.append(";");
+            }
+        }
         return sb.toString();
     }
 

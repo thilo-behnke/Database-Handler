@@ -13,6 +13,7 @@ public class Database {
 
     public interface ITable {
         User getTableEntity(List<String> attributes);
+        String getTableKey();
     }
 
     public enum Types {
@@ -26,24 +27,41 @@ public class Database {
                // TODO: throw exception?
                 return null;
             }
+
+            @Override
+            public String getTableKey() {
+                return Column.U_ID.name();
+            }
         }, CUSTOMERS {
             @Override
             public User getTableEntity(List<String> attributes) {
                 return new UserBuilder()
+                        .setId(Integer.parseInt(attributes.get(0)))
                         .setName(attributes.get(1))
                         .createCustomer()
                         .setRank(Integer.parseInt(attributes.get(2)))
                         .getCustomer();
             }
+
+            @Override
+            public String getTableKey() {
+                return Column.C_ID.name();
+            }
         }, EMPLOYEES {
             @Override
             public User getTableEntity(List<String> attributes) {
                 return new UserBuilder()
+                        .setId(Integer.parseInt(attributes.get(0)))
                         .setName(attributes.get(1))
                         .createEmployee()
                         .setSalary(Integer.parseInt(attributes.get(2)))
                         .setLocation(attributes.get(3))
                         .getEmployee();
+            }
+
+            @Override
+            public String getTableKey() {
+                return Column.E_ID.name();
             }
         };
 
