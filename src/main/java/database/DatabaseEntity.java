@@ -1,27 +1,29 @@
 package database;
 
+import model.Database;
+
 import java.util.List;
 
 // TODO: Add JDoc
 public class DatabaseEntity {
 
-    private String table;
-    private List<Column> columns;
+    private Database.Table table;
+    private List<Database.Table.Columns> columns;
     private List<String> attributes;
 
-    public String getTable() {
+    public Database.Table getTable() {
         return table;
     }
 
-    public void setTable(String table) {
+    public void setTable(Database.Table table) {
         this.table = table;
     }
 
-    public void setColumns(List<Column> columns) {
+    public void setColumns(List<Database.Table.Columns> columns) {
         this.columns = columns;
     }
 
-    public List<Column> getColumns() {
+    public List<Database.Table.Columns> getColumns() {
         return this.columns;
     }
 

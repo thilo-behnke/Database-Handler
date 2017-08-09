@@ -28,11 +28,6 @@ public class User {
         return name;
     }
 
-    // TODO: Check if method is still relevant
-    public DatabaseEntity getDBMapping() {
-        return UserMapper.getUserMapping(this);
-    }
-
     @Override
     public String toString() {
         return "ID: " + this.id

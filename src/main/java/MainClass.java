@@ -2,29 +2,33 @@ import database.DatabaseHelper;
 import model.User;
 import model.UserMapper;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static model.Database.Table.*;
 
 public class MainClass {
 
     public static void main(String args[]) {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
         dbHelper.connectToDatabase("jdbc:postgresql:mydb", "postgres", "admin");
-        dbHelper.createTable(UserMapper.getUserTableStructure());
-        dbHelper.createTable(UserMapper.getEmployeeTableStructure());
-        dbHelper.createTable(UserMapper.getCustomerTableStructure());
+        dbHelper.createTables(
+                UserMapper.getEntityMapping(USERS),
+                UserMapper.getEntityMapping(CUSTOMERS),
+                UserMapper.getEntityMapping(EMPLOYEES));
 
         List<User> list = new ArrayList<>(readUsersFromFile());
-        list.stream().filter(x -> x instanceof User.Customer).map(x -> (User.Customer) x).forEach(dbHelper::insertCustomer);
-        list.stream().filter(x -> x instanceof User.Employee).map(x -> (User.Employee) x).forEach(dbHelper::insertEmployee);
+        list.stream().filter(x -> x instanceof User.Customer).map(x -> (User.Customer) x).forEach(dbHelper::insertUser);
+        list.stream().filter(x -> x instanceof User.Employee).map(x -> (User.Employee) x).forEach(dbHelper::insertUser);
     }
 
     // TODO: Move to another class that handles file reading
