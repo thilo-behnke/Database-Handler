@@ -1,5 +1,5 @@
 import database.DatabaseHelper;
-import model.UserMapper;
+import model.user.UserMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,9 +17,7 @@ public class DBHandlerTest {
                 UserMapper.getEntityMapping(CUSTOMERS),
                 UserMapper.getEntityMapping(EMPLOYEES));
 
-        Assert.assertTrue(dbHelper.isTableAvailable(USERS));
-        Assert.assertTrue(dbHelper.isTableAvailable(CUSTOMERS));
-        Assert.assertTrue(dbHelper.isTableAvailable(EMPLOYEES));
+        Assert.assertTrue(dbHelper.areTablesAvailable(USERS, CUSTOMERS, EMPLOYEES));
     }
 
 

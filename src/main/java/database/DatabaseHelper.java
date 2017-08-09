@@ -2,10 +2,14 @@ package database;
 
 import model.Database;
 import model.Database.Table.Columns;
-import model.User;
+import model.user.User;
+import model.user.UserMapper;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // TODO: Add JDoc
 public class DatabaseHelper {
@@ -85,9 +89,9 @@ public class DatabaseHelper {
     public void insertUser(User user) {
 //        try {
 //            PreparedStatement statement = connection.prepareStatement(
-//                    getInsertQuery(table), Statement.RETURN_GENERATED_KEYS);
+//                    getInsertQuery(user.getType()), Statement.RETURN_GENERATED_KEYS);
 //            // set user data
-//            DatabaseEntity databaseEntity = UserMapper.getEntityMapping(table);
+//            DatabaseEntity databaseEntity = UserMapper.getEntityMapping(user.getType());
 //            statement.setString(1, employee.getName());
 //            statement.setInt(2, User.UserType.Employee.id);
 //            int affectedRows = statement.executeUpdate();
@@ -132,12 +136,37 @@ public class DatabaseHelper {
         return sb.toString();
     }
 
-    public boolean isTableAvailable(Database.Table table) {
+    public boolean areTablesAvailable(Database.Table... tables) {
+        for (Database.Table t : tables) {
+            if (!isTableAvailable(t)) {
+                System.out.println(t + " is not available");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isTableAvailable(Database.Table table) {
         try {
-            ResultSet resultSet = getTableSchema();
-            if (resultSet != null) {
-                while (resultSet.next()) {
-                    if (resultSet.getString("table_name").equals(table.name().toLowerCase())) return true;
+            ResultSet resultSetTable = getTableSchema(table);
+            if (resultSetTable != null) {
+                while (resultSetTable.next()) {
+                    if (resultSetTable.getString("table_name").equals(table.name().toLowerCase())) {
+                        ResultSet resultSetColumns = getColumnSchema(table);
+                        List<String> columnsReference =
+                                table.getColumns(table)
+                                        .stream()
+                                        .map(Enum::name)
+                                        .map(x -> x = x.toLowerCase())
+                                        .sorted()
+                                        .collect(Collectors.toList());
+                        List<String> columnsDB = new ArrayList<>();
+                        while (resultSetColumns.next()) {
+                            columnsDB.add(resultSetColumns.getString("column_name"));
+                        }
+                        if (columnsDB.stream().sorted().collect(Collectors.toList())
+                                .equals(columnsReference)) return true;
+                    }
                 }
                 return false;
             } else return false;
@@ -147,12 +176,22 @@ public class DatabaseHelper {
         return false;
     }
 
-    private ResultSet getTableSchema() {
+    private ResultSet getTableSchema(Database.Table table) {
         try {
-            return connection.getMetaData().getTables("mydb", "public", "%", null);
+            return connection.getMetaData().getTables("mydb", "public", table.name().toLowerCase(), null);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return null;
+    }
+
+    private ResultSet getColumnSchema(Database.Table table) {
+        try {
+            return connection.getMetaData().getColumns("mydb", "public", table.name().toLowerCase(), null);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        // TODO: Think of better way than returning null - NullPointerException!
         return null;
     }
 
