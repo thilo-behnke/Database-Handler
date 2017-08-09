@@ -1,6 +1,6 @@
 import database.DatabaseHelper;
-import model.User;
-import model.UserMapper;
+import model.user.User;
+import model.user.UserMapper;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

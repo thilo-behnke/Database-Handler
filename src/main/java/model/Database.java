@@ -1,5 +1,8 @@
 package model;
 
+import model.user.User;
+import model.user.UserBuilder;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
