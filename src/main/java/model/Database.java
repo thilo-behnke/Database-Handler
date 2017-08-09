@@ -46,7 +46,7 @@ public class Database {
 
         public List<Columns> getColumns(Table table) {
             return Arrays.stream(Columns.values())
-                    .filter(x -> x.table != table)
+                    .filter(x -> x.table.equals(table))
                     .collect(Collectors.toList());
         }
 

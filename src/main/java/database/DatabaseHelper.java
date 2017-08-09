@@ -1,14 +1,11 @@
 package database;
 
 import model.Database;
-import model.Database.Table.*;
+import model.Database.Table.Columns;
 import model.User;
-import model.UserMapper;
 
-import javax.swing.plaf.nimbus.State;
-import javax.xml.transform.Result;
 import java.sql.*;
-import java.util.*;
+import java.util.Iterator;
 
 // TODO: Add JDoc
 public class DatabaseHelper {
@@ -47,7 +44,6 @@ public class DatabaseHelper {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-
             createTable(e);
         }
     }
@@ -56,14 +52,13 @@ public class DatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             statement.execute("Drop table " + tableName + ";");
-        } catch (SQLException ex){
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
     private void createTable(DatabaseEntity entity) {
         try {
-
             Statement statement = connection.createStatement();
             StringBuilder sb = new StringBuilder();
             sb.append("CREATE TABLE ")
@@ -137,12 +132,12 @@ public class DatabaseHelper {
         return sb.toString();
     }
 
-    public boolean isTableAvailable(Database.Table table){
+    public boolean isTableAvailable(Database.Table table) {
         try {
             ResultSet resultSet = getTableSchema();
-            if(resultSet != null){
-                while(resultSet.next()){
-                    if(resultSet.getString("table_name").equals(table.name().toLowerCase())) return true;
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    if (resultSet.getString("table_name").equals(table.name().toLowerCase())) return true;
                 }
                 return false;
             } else return false;

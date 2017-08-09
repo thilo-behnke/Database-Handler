@@ -3,11 +3,7 @@ import model.UserMapper;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.sql.ResultSet;
-
-import static model.Database.Table.CUSTOMERS;
-import static model.Database.Table.EMPLOYEES;
-import static model.Database.Table.USERS;
+import static model.Database.Table.*;
 
 public class DBHandlerTest {
 
