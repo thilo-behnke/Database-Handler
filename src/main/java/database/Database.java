@@ -12,6 +12,7 @@ import static database.Database.Types.*;
 public class Database {
 
     public interface ITable {
+
         User getTableEntity(List<String> attributes);
 
         Table.Column getTableKey();
@@ -22,7 +23,8 @@ public class Database {
     }
 
     public enum Table implements ITable {
-        USERS {
+
+        USERS(null) {
             @Override
             public User getTableEntity(List<String> attributes) {
                 // TODO: throw exception?
@@ -33,7 +35,7 @@ public class Database {
             public Column getTableKey() {
                 return Column.U_ID;
             }
-        }, CUSTOMERS {
+        }, CUSTOMERS(USERS) {
             @Override
             public User getTableEntity(List<String> attributes) {
                 return new UserBuilder()
@@ -48,7 +50,7 @@ public class Database {
             public Column getTableKey() {
                 return Column.C_ID;
             }
-        }, EMPLOYEES {
+        }, EMPLOYEES(USERS) {
             @Override
             public User getTableEntity(List<String> attributes) {
                 return new UserBuilder()
@@ -66,9 +68,15 @@ public class Database {
             }
         };
 
-        public static List<Column> getColumns(Table table) {
+        private Table inheritsFrom;
+
+        Table(Table inheritsFrom) {
+            this.inheritsFrom = inheritsFrom;
+        }
+
+        public static List<Column> getColumns(Table table, boolean inherited) {
             return Arrays.stream(Column.values())
-                    .filter(x -> x.table.equals(table))
+                    .filter(x -> inherited ? x.table.equals(table.inheritsFrom) || x.table.equals(table) : x.table.equals(table))
                     .collect(Collectors.toList());
         }
 

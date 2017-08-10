@@ -12,14 +12,12 @@ import static database.Database.Table.*;
 public class UserMapper {
 
     public static DatabaseEntity getEntityMapping(Database.Table table) {
-        return new DatabaseEntity(table, Database.Table.getColumns(table));
+        return new DatabaseEntity(table, Database.Table.getColumns(table, false));
     }
 
     public static User createUserByAttributes(Database.Table table, Map<Column, String> attributeMap) {
         List<Database.Table.Column> expectedAttributes = new ArrayList<>();
-        expectedAttributes.addAll(getColumns(table));
-        // TODO: refactor
-        expectedAttributes.addAll(getColumns(USERS));
+        expectedAttributes.addAll(getColumns(table, true));
         expectedAttributes.remove(table.getTableKey());
         // TODO: Add better error handling
         if(attributeMap.size() < expectedAttributes.size()) throw new IllegalArgumentException();
@@ -37,8 +35,7 @@ public class UserMapper {
 
     public static Column getColumnByIndex(Database.Table table, int i) {
         List<Column> columns =  new ArrayList<>();
-        columns.addAll(getColumns(USERS));
-        columns.addAll(getColumns(table));
+        columns.addAll(getColumns(table, true));
         columns.remove(table.getTableKey());
         return columns.get(i);
     }

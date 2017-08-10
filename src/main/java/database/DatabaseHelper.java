@@ -141,7 +141,7 @@ public class DatabaseHelper implements IDatabaseHelper {
     private void setQueryParameters(PreparedStatement statement, User user, Database.Table table) {
         int counter = 1;
         try {
-            for (Column c : getColumns(table)) {
+            for (Column c : getColumns(table, false)) {
                 if (c.getType().equals(Database.Types.SERIAL) || c.getType().equals(Database.Types.INTEGER)) {
                     statement.setInt(counter, (int) c.getAttribute(user));
                 } else if (c.getType().equals(Database.Types.TEXT)) {
@@ -157,7 +157,7 @@ public class DatabaseHelper implements IDatabaseHelper {
     private String getInsertQuery(Database.Table table) {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ").append(table.name()).append(" (");
-        for (Iterator<Database.Table.Column> it = getColumns(table).iterator(); it.hasNext(); ) {
+        for (Iterator<Database.Table.Column> it = getColumns(table, false).iterator(); it.hasNext(); ) {
             Database.Table.Column c = it.next();
             sb.append(c.name());
             while (it.hasNext()) {
@@ -166,7 +166,7 @@ public class DatabaseHelper implements IDatabaseHelper {
             }
         }
         sb.append(")").append("VALUES (");
-        for (int i = 0; i < getColumns(table).size(); i++) {
+        for (int i = 0; i < getColumns(table, false).size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -181,20 +181,17 @@ public class DatabaseHelper implements IDatabaseHelper {
         try {
             Statement statement = connection.createStatement();
             List<Column> selectList = new ArrayList<>();
-            selectList.addAll(getColumns(table));
+            selectList.addAll(getColumns(table, true));
             // TODO: User specific commands need to be removed from helper and put into a manager class
-            selectList.addAll(getColumns(USERS));
             List<Database.Table> joinList = new ArrayList<>();
             joinList.add(USERS);
             ResultSet resultSet = statement.executeQuery(createSelectQuery(
                     new SearchPackage(table, selectList, filterMap, joinList)));
             List<User> resultList = new ArrayList<>();
             while (resultSet.next()) {
+                // TODO: Refactor into lambda
                 Map<Column, String> attributeMap = new HashMap<>();
-                for (Database.Table.Column c : getColumns(table)) {
-                    attributeMap.put(c, resultSet.getString(c.name()));
-                }
-                for (Database.Table.Column c : getColumns(USERS)) {
+                for (Database.Table.Column c : getColumns(table, true)) {
                     attributeMap.put(c, resultSet.getString(c.name()));
                 }
                 resultList.add(UserMapper.createUserByAttributes(table, attributeMap));
@@ -259,7 +256,7 @@ public class DatabaseHelper implements IDatabaseHelper {
                     if (resultSetTable.getString("table_name").equals(table.name().toLowerCase())) {
                         ResultSet resultSetColumns = getColumnSchema(table);
                         List<String> columnsReference =
-                                getColumns(table)
+                                getColumns(table, false)
                                         .stream()
                                         .map(Enum::name)
                                         .map(x -> x = x.toLowerCase())
