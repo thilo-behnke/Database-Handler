@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+// TODO: Make FileReader generic
 public class FileReader {
 
     public static class ReadInfo{
