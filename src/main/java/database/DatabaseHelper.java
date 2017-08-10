@@ -182,7 +182,7 @@ public class DatabaseHelper implements IDatabaseHelper {
             Statement statement = connection.createStatement();
             List<Column> selectList = new ArrayList<>();
             selectList.addAll(getColumns(table));
-            // TODO: Refactor
+            // TODO: User specific commands need to be removed from helper and put into a manager class
             selectList.addAll(getColumns(USERS));
             List<Database.Table> joinList = new ArrayList<>();
             joinList.add(USERS);
@@ -192,8 +192,7 @@ public class DatabaseHelper implements IDatabaseHelper {
             while (resultSet.next()) {
                 Map<Column, String> attributeMap = new HashMap<>();
                 for (Database.Table.Column c : getColumns(table)) {
-                    if (!c.equals(Column.C_ID) && !c.equals(Column.E_ID))
-                        attributeMap.put(c, resultSet.getString(c.name()));
+                    attributeMap.put(c, resultSet.getString(c.name()));
                 }
                 for (Database.Table.Column c : getColumns(USERS)) {
                     attributeMap.put(c, resultSet.getString(c.name()));

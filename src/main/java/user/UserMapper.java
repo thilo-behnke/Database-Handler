@@ -22,7 +22,7 @@ public class UserMapper {
         expectedAttributes.addAll(getColumns(USERS));
         expectedAttributes.remove(table.getTableKey());
         // TODO: Add better error handling
-        if(attributeMap.size() != expectedAttributes.size()) throw new IllegalArgumentException();
+        if(attributeMap.size() < expectedAttributes.size()) throw new IllegalArgumentException();
         List<String> attributes = new ArrayList<>();
         attributes.add(attributeMap.get(Column.U_ID));
         attributes.add(attributeMap.get(Column.U_NAME));
