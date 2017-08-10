@@ -3,7 +3,7 @@ package user;
 import database.Database;
 
 // TODO: Add JDoc
-public class User {
+public class User implements Entity {
 
     int id;
     String name;
