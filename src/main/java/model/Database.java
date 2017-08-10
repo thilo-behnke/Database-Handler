@@ -13,7 +13,8 @@ public class Database {
 
     public interface ITable {
         User getTableEntity(List<String> attributes);
-        String getTableKey();
+
+        Table.Column getTableKey();
     }
 
     public enum Types {
@@ -24,13 +25,13 @@ public class Database {
         USERS {
             @Override
             public User getTableEntity(List<String> attributes) {
-               // TODO: throw exception?
+                // TODO: throw exception?
                 return null;
             }
 
             @Override
-            public String getTableKey() {
-                return Column.U_ID.name();
+            public Column getTableKey() {
+                return Column.U_ID;
             }
         }, CUSTOMERS {
             @Override
@@ -39,13 +40,13 @@ public class Database {
                         .setId(Integer.parseInt(attributes.get(0)))
                         .setName(attributes.get(1))
                         .createCustomer()
-                        .setRank(Integer.parseInt(attributes.get(2)))
+                        .setRank(attributes.get(2))
                         .getCustomer();
             }
 
             @Override
-            public String getTableKey() {
-                return Column.C_ID.name();
+            public Column getTableKey() {
+                return Column.C_ID;
             }
         }, EMPLOYEES {
             @Override
@@ -60,8 +61,8 @@ public class Database {
             }
 
             @Override
-            public String getTableKey() {
-                return Column.E_ID.name();
+            public Column getTableKey() {
+                return Column.E_ID;
             }
         };
 
@@ -81,7 +82,8 @@ public class Database {
                 public Object getAttribute(User user) {
                     return user.getId();
                 }
-            }, U_NAME(USERS, TEXT) {
+            },
+            U_NAME(USERS, TEXT) {
                 @Override
                 public Object getAttribute(User user) {
                     return user.getName();
@@ -97,10 +99,10 @@ public class Database {
                 public Object getAttribute(User user) {
                     return user.getId();
                 }
-            }, C_RANK(CUSTOMERS, INTEGER) {
+            }, C_RANK(CUSTOMERS, TEXT) {
                 @Override
                 public Object getAttribute(User user) {
-                    return ((User.Customer)user).getRank();
+                    return ((User.Customer) user).getRank();
                 }
             },
             E_ID(EMPLOYEES, SERIAL) {
@@ -111,12 +113,12 @@ public class Database {
             }, E_SALARY(EMPLOYEES, INTEGER) {
                 @Override
                 public Object getAttribute(User user) {
-                    return ((User.Employee)user).getSalary();
+                    return ((User.Employee) user).getSalary();
                 }
             }, E_LOCATION(EMPLOYEES, TEXT) {
                 @Override
                 public Object getAttribute(User user) {
-                    return ((User.Employee)user).getLocation();
+                    return ((User.Employee) user).getLocation();
                 }
             };
 

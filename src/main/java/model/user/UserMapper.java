@@ -3,7 +3,7 @@ package model.user;
 import database.DatabaseEntity;
 import model.Database;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -11,37 +11,43 @@ import static model.Database.Table.*;
 
 public class UserMapper {
 
-    private static DatabaseEntity userMapping;
-
-    // TODO: Check privacy level
     public static DatabaseEntity getEntityMapping(Database.Table table) {
-//        if (table.equals(USERS)) {
-//            throw new IllegalArgumentException("USERS are not allowed to be instantiated!");
-//        }
-        // TODO: Add caching
-        userMapping = new DatabaseEntity();
-        userMapping.setTable(table);
-        userMapping.setColumns(
-                // TODO: Refactor into static method
-                getColumns(table)
-        );
-        return userMapping;
+        return new DatabaseEntity(table, Database.Table.getColumns(table));
     }
 
-    public static User.Employee createEmployeeByAttributes(List<String> attributes) {
+    public static User.Employee createEmployeeByAttributes(Map<Column, String> attributes) {
         return (User.Employee) createUserByAttributes(EMPLOYEES, attributes);
     }
 
-    public static User.Customer createCustomerByAttributes(List<String> attributes) {
+    public static User.Customer createCustomerByAttributes(Map<Column, String> attributes) {
         return (User.Customer) createUserByAttributes(CUSTOMERS, attributes);
     }
 
-    private static User createUserByAttributes(Database.Table table, List<String> attributes) {
-        DatabaseEntity entity = UserMapper.getEntityMapping(table);
-        if (attributes.size() == entity.getAttributes().size()) {
-            return table.getTableEntity(attributes);
-        } else {
-            throw new IllegalArgumentException("List has wrong format: " + attributes.size() + " Columns");
+    public static User createUserByAttributes(Database.Table table, Map<Column, String> attributeMap) {
+        List<Database.Table.Column> expectedAttributes = new ArrayList<>();
+        expectedAttributes.addAll(getColumns(table));
+        // TODO: refactor
+        expectedAttributes.addAll(getColumns(USERS));
+        expectedAttributes.remove(table.getTableKey());
+        // TODO: Add better error handling
+        if(attributeMap.size() != expectedAttributes.size()) throw new IllegalArgumentException();
+        List<String> attributes = new ArrayList<>();
+        attributes.add(attributeMap.get(Column.U_ID));
+        attributes.add(attributeMap.get(Column.U_NAME));
+        if(table.equals(CUSTOMERS)) {
+            attributes.add(attributeMap.get(Column.C_RANK));
+        } else if (table.equals(EMPLOYEES)) {
+            attributes.add(attributeMap.get(Column.E_SALARY));
+            attributes.add(attributeMap.get(Column.E_LOCATION));
         }
+        return table.getTableEntity(attributes);
+    }
+
+    public static Column getColumnByIndex(Database.Table table, int i) {
+        List<Column> columns =  new ArrayList<>();
+        columns.addAll(getColumns(USERS));
+        columns.addAll(getColumns(table));
+        columns.remove(table.getTableKey());
+        return columns.get(i);
     }
 }

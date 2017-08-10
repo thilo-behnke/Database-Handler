@@ -63,7 +63,7 @@ public class UserBuilder {
             this.customer = customer;
         }
 
-        public CustomerBuilder setRank(int rank) {
+        public CustomerBuilder setRank(String rank) {
             customer.rank = rank;
             return this;
         }

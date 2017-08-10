@@ -12,7 +12,7 @@ import static model.Database.Table.*;
 
 public class DBHandlerTest {
 
-    DatabaseHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     @Before
     public void prepare() {
@@ -26,8 +26,7 @@ public class DBHandlerTest {
                 UserMapper.getEntityMapping(USERS),
                 UserMapper.getEntityMapping(CUSTOMERS),
                 UserMapper.getEntityMapping(EMPLOYEES));
-
-        Assert.assertTrue(dbHelper.areTablesAvailable(USERS, CUSTOMERS, EMPLOYEES));
+        Assert.assertTrue(dbHelper.checkTableStatus(USERS, CUSTOMERS, EMPLOYEES));
     }
 
     @Test
@@ -37,10 +36,27 @@ public class DBHandlerTest {
                         .setId(1)
                         .setName("Max Mustermann")
                         .createCustomer()
-                        .setRank(2).getCustomer();
-        dbHelper.insertUser(customer);
+                        .setRank("A").getCustomer();
+        dbHelper.insertUsers(customer);
 
         List<User> userList = dbHelper.searchUserInDB(CUSTOMERS, null);
         Assert.assertTrue(userList.size() == 1);
+        Assert.assertTrue(userList.get(0).equals(customer));
+    }
+
+    @Test
+    public void insertEmployee() {
+        User.Employee employee =
+                new UserBuilder()
+                .setId(2)
+                .setName("Maike Musterfrau")
+                .createEmployee()
+                .setSalary(30000)
+                .setLocation("Germany").getEmployee();
+        dbHelper.insertUsers(employee);
+
+        List<User> userList = dbHelper.searchUserInDB(EMPLOYEES, null);
+        Assert.assertTrue(userList.size() == 1);
+        Assert.assertTrue(userList.get(0).equals(employee));
     }
 }

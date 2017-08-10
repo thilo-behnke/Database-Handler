@@ -1,9 +1,9 @@
 package database;
 
-import javafx.scene.control.Tab;
 import model.Database;
 import model.Database.Table.Column;
 import model.user.User;
+import model.user.UserMapper;
 
 import java.sql.*;
 import java.util.*;
@@ -12,20 +12,21 @@ import java.util.stream.Collectors;
 import static model.Database.Table.USERS;
 import static model.Database.Table.getColumns;
 
-// TODO: Add JDoc
-public class DatabaseHelper {
+/**
+ * Class for handling the connection to a specified database.
+ */
+public class DatabaseHelper implements IDatabaseHelper {
 
     private static DatabaseHelper dbHelper;
     private Connection connection;
-
-    private String url;
     private String db;
-    private String user;
-    private String password;
 
-    private DatabaseHelper() {
-    }
+    private DatabaseHelper() {}
 
+    /**
+     * Singleton method for receiving the DBHelper instance.
+     * @return singleton object of DBHelper.
+     */
     public static DatabaseHelper getInstance() {
         if (dbHelper == null) {
             dbHelper = new DatabaseHelper();
@@ -33,20 +34,30 @@ public class DatabaseHelper {
         return dbHelper;
     }
 
+    /**
+     * Connect to database at specified location.
+     * @param url path to database.
+     * @param db name of database.
+     * @param user access credential.
+     * @param password access credential.
+     */
+    @Override
     public void connectToDatabase(String url, String db, String user, String password) {
         try {
             connection = DriverManager.getConnection(
                     url + db, user, password
             );
-            this.url = url;
             this.db = db;
-            this.user = user;
-            this.password = password;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    /**
+     * Create tables for specified database entities.
+     * @param entities list of entities.
+     */
+    @Override
     public void createTables(DatabaseEntity... entities) {
         for (DatabaseEntity e : entities) {
             try {
@@ -93,6 +104,13 @@ public class DatabaseHelper {
             statement.execute(sb.toString());
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @Override
+    public void insertUsers(User...users){
+        for(User u : users){
+            insertUser(u);
         }
     }
 
@@ -155,25 +173,28 @@ public class DatabaseHelper {
         return sb.toString();
     }
 
+    @Override
     public List<User> searchUserInDB(Database.Table table, Map<Database.Table.Column, String> filterMap) {
         try {
             Statement statement = connection.createStatement();
             List<Column> selectList = new ArrayList<>();
             selectList.addAll(getColumns(table));
+            // TODO: Refactor
             selectList.addAll(getColumns(USERS));
             List<Database.Table> joinList = new ArrayList<>();
             joinList.add(USERS);
-            ResultSet resultSet = statement.executeQuery(createSelectQuery(table, filterMap, joinList));
+            ResultSet resultSet = statement.executeQuery(createSelectQuery(
+                    new SearchPackage(table, selectList, filterMap, joinList)));
             List<User> resultList = new ArrayList<>();
             while (resultSet.next()) {
-                List<String> attributes = new ArrayList<>();
+                Map<Column, String> attributeMap = new HashMap<>();
                 for (Database.Table.Column c : getColumns(table)) {
-                    attributes.add(resultSet.getString(c.name()));
+                    attributeMap.put(c, resultSet.getString(c.name()));
                 }
                 for (Database.Table.Column c : getColumns(USERS)) {
-                    attributes.add(resultSet.getString(c.name()));
+                    attributeMap.put(c, resultSet.getString(c.name()));
                 }
-                resultList.add(table.getTableEntity(attributes));
+                resultList.add(UserMapper.createUserByAttributes(table, attributeMap));
             }
             return resultList;
         } catch (SQLException ex) {
@@ -182,21 +203,27 @@ public class DatabaseHelper {
         return null;
     }
 
-    private String createSelectQuery(Database.Table table, List<String>selectList, Map<Database.Table.Column, String> selectMap, List<Database.Table> joinTable) {
+    private String createSelectQuery(SearchPackage searchPackage) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT * FROM ").append(table);
-        if (joinTable == null) sb.append(";");
+        sb.append("SELECT ");
+        for(Iterator<Database.Table.Column> it = searchPackage.getSelectList().iterator(); it.hasNext();){
+            Column c = it.next();
+            sb.append(c.name());
+            if(it.hasNext()) sb.append(", ");
+        }
+        sb.append(" FROM ").append(searchPackage.getMainTable());
+        if (searchPackage.getJoinTable() == null) sb.append(";");
         else {
-            for(Database.Table t : joinTable){
+            for(Database.Table t : searchPackage.getJoinTable()){
                 sb.append(" JOIN ").append(t).append(" ON ")
-                        .append(table.getTableKey())
+                        .append(searchPackage.getMainTable().getTableKey())
                         .append(" = ")
                         .append(t.getTableKey());
             }
-            if(selectMap == null) sb.append(";");
+            if(searchPackage.getFilterMap() == null) sb.append(";");
             else {
                 boolean isFirst = true;
-                for (Map.Entry<Database.Table.Column, String> entry : selectMap.entrySet()) {
+                for (Map.Entry<Database.Table.Column, String> entry : searchPackage.getFilterMap().entrySet()) {
                     sb.append(" WHERE ");
                     if (!isFirst) sb.append(" AND ");
                     sb.append(entry.getKey())
@@ -210,7 +237,8 @@ public class DatabaseHelper {
         return sb.toString();
     }
 
-    public boolean areTablesAvailable(Database.Table... tables) {
+    @Override
+    public boolean checkTableStatus(Database.Table... tables) {
         for (Database.Table t : tables) {
             if (!isTableAvailable(t)) {
                 System.out.println(t + " is not available");
@@ -265,7 +293,6 @@ public class DatabaseHelper {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        // TODO: Think of better way than returning null - NullPointerException!
         return null;
     }
 
