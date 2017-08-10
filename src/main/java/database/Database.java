@@ -1,13 +1,13 @@
-package model;
+package database;
 
-import model.user.User;
-import model.user.UserBuilder;
+import user.User;
+import user.UserBuilder;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static model.Database.Types.*;
+import static database.Database.Types.*;
 
 public class Database {
 

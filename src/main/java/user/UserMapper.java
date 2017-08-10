@@ -1,26 +1,18 @@
-package model.user;
+package user;
 
 import database.DatabaseEntity;
-import model.Database;
+import database.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static model.Database.Table.*;
+import static database.Database.Table.*;
 
 public class UserMapper {
 
     public static DatabaseEntity getEntityMapping(Database.Table table) {
         return new DatabaseEntity(table, Database.Table.getColumns(table));
-    }
-
-    public static User.Employee createEmployeeByAttributes(Map<Column, String> attributes) {
-        return (User.Employee) createUserByAttributes(EMPLOYEES, attributes);
-    }
-
-    public static User.Customer createCustomerByAttributes(Map<Column, String> attributes) {
-        return (User.Customer) createUserByAttributes(CUSTOMERS, attributes);
     }
 
     public static User createUserByAttributes(Database.Table table, Map<Column, String> attributeMap) {

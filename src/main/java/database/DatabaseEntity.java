@@ -1,7 +1,5 @@
 package database;
 
-import model.Database;
-
 import java.util.List;
 
 // TODO: Add JDoc

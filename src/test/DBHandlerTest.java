@@ -1,16 +1,16 @@
 import database.DatabaseHelper;
-import model.user.User;
-import model.user.UserBuilder;
-import model.user.UserMapper;
+import files.FileReader;
+import user.User;
+import user.UserBuilder;
+import user.UserMapper;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static model.Database.Table.*;
+import static database.Database.Table.*;
 
 public class DBHandlerTest {
 

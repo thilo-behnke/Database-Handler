@@ -1,6 +1,6 @@
-package model.user;
+package user;
 
-import model.Database;
+import database.Database;
 
 // TODO: Add JDoc
 public class User {

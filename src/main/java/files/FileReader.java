@@ -1,8 +1,9 @@
-import model.Database;
-import model.user.User;
-import model.user.UserMapper;
+package files;
 
-import java.io.File;
+import database.Database;
+import user.User;
+import user.UserMapper;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -15,22 +16,19 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static model.Database.Table.CUSTOMERS;
-import static model.Database.Table.EMPLOYEES;
-
 public class FileReader {
 
     public static class ReadInfo{
         String file;
         Database.Table table;
 
-        ReadInfo(String file, Database.Table table) {
+        public ReadInfo(String file, Database.Table table) {
             this.file = file;
             this.table = table;
         }
     }
 
-    static List<User> readUsersFromFile(ReadInfo...readInfos) {
+    public static List<User> readUsersFromFile(ReadInfo...readInfos) {
         List<User> userList = new ArrayList<>();
         // TODO: Make file paths relative
         for(ReadInfo r : readInfos){

@@ -1,10 +1,11 @@
 import database.DatabaseHelper;
-import model.user.User;
-import model.user.UserMapper;
+import files.FileReader;
+import user.User;
+import user.UserMapper;
 
 import java.util.*;
 
-import static model.Database.Table.*;
+import static database.Database.Table.*;
 
 public class MainClass {
 
@@ -20,5 +21,4 @@ public class MainClass {
         list.stream().filter(x -> x instanceof User.Customer).map(x -> (User.Customer) x).forEach(dbHelper::insertUser);
         list.stream().filter(x -> x instanceof User.Employee).map(x -> (User.Employee) x).forEach(dbHelper::insertUser);
     }
-
 }

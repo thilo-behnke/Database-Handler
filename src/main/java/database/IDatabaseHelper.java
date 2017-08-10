@@ -1,7 +1,6 @@
 package database;
 
-import model.Database;
-import model.user.User;
+import user.User;
 
 import java.util.List;
 import java.util.Map;

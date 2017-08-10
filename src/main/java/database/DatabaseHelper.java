@@ -1,16 +1,15 @@
 package database;
 
-import model.Database;
-import model.Database.Table.Column;
-import model.user.User;
-import model.user.UserMapper;
+import database.Database.Table.Column;
+import user.User;
+import user.UserMapper;
 
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static model.Database.Table.USERS;
-import static model.Database.Table.getColumns;
+import static database.Database.Table.USERS;
+import static database.Database.Table.getColumns;
 
 /**
  * Class for handling the connection to a specified database.
