@@ -1,0 +1,12 @@
+U_ID;U_NAME;U_TYPE;C_RANK
+101;Philip;1;A
+102;Lisa;1;B
+103;Tom;1;C
+104;Mike;1;B
+105;Rolf;1;A
+106;Jens;1;B
+107;Carsten;1;C
+108;Samuel;1;C
+109;Jack;1;C
+110;Mike;1;C
+111;Jasmin;1;B
