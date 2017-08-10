@@ -2,7 +2,6 @@ package database;
 
 import database.Database.Table.Column;
 import user.User;
-import user.UserMapper;
 
 import java.sql.*;
 import java.util.*;
@@ -177,26 +176,10 @@ public class DatabaseHelper implements IDatabaseHelper {
     }
 
     @Override
-    public List<User> searchUserInDB(Database.Table table, Map<Database.Table.Column, String> filterMap) {
+    public ResultSet searchInDB(SearchPackage searchPackage) {
         try {
             Statement statement = connection.createStatement();
-            List<Column> selectList = new ArrayList<>();
-            selectList.addAll(getColumns(table, true));
-            // TODO: User specific commands need to be removed from helper and put into a manager class
-            List<Database.Table> joinList = new ArrayList<>();
-            joinList.add(USERS);
-            ResultSet resultSet = statement.executeQuery(createSelectQuery(
-                    new SearchPackage(table, selectList, filterMap, joinList)));
-            List<User> resultList = new ArrayList<>();
-            while (resultSet.next()) {
-                // TODO: Refactor into lambda
-                Map<Column, String> attributeMap = new HashMap<>();
-                for (Database.Table.Column c : getColumns(table, true)) {
-                    attributeMap.put(c, resultSet.getString(c.name()));
-                }
-                resultList.add(UserMapper.createUserByAttributes(table, attributeMap));
-            }
-            return resultList;
+            return statement.executeQuery(createSelectQuery(searchPackage));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

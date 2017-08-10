@@ -2,7 +2,7 @@ package files;
 
 import database.Database;
 import user.User;
-import user.UserMapper;
+import user.DatabaseController;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -43,8 +43,8 @@ public class FileReader {
         try (Stream<String> lines = Files.lines(path, Charset.defaultCharset())) {
             lines.skip(1)
                     .map(x -> new ArrayList<>(Arrays.asList(x.split(";"))))
-                    .map(x -> x.stream().collect(Collectors.toMap(y -> UserMapper.getColumnByIndex(table, x.indexOf(y)), Function.identity())))
-                    .forEach(x -> userList.add(UserMapper.createUserByAttributes(table, x)));
+                    .map(x -> x.stream().collect(Collectors.toMap(y -> DatabaseController.getColumnByIndex(table, x.indexOf(y)), Function.identity())))
+                    .forEach(x -> userList.add(DatabaseController.createUserByAttributes(table, x)));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

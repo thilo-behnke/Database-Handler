@@ -2,8 +2,7 @@ package database;
 
 import user.User;
 
-import java.util.List;
-import java.util.Map;
+import java.sql.ResultSet;
 
 public interface IDatabaseHelper {
 
@@ -11,9 +10,9 @@ public interface IDatabaseHelper {
 
     void createTables(DatabaseEntity... entities);
 
-    void insertUsers(User...user);
+    void insertUsers(User... user);
 
-    List<User> searchUserInDB(Database.Table table, Map<Database.Table.Column, String> filterMap);
+    ResultSet searchInDB(SearchPackage searchPackage);
 
-    boolean checkTableStatus(Database.Table...tables);
+    boolean checkTableStatus(Database.Table... tables);
 }

@@ -80,6 +80,10 @@ public class Database {
                     .collect(Collectors.toList());
         }
 
+        public Table getInheritsFrom() {
+            return inheritsFrom;
+        }
+
         public interface IColumn {
             Object getAttribute(User user);
         }

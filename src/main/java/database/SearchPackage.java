@@ -25,7 +25,7 @@ public class SearchPackage {
      */
     private List<Database.Table> joinTable;
 
-    SearchPackage(Database.Table mainTable, List<Database.Table.Column> selectList, Map<Database.Table.Column, String> filterMap, List<Database.Table> joinTable) {
+    public SearchPackage(Database.Table mainTable, List<Database.Table.Column> selectList, Map<Database.Table.Column, String> filterMap, List<Database.Table> joinTable) {
         this.mainTable = mainTable;
         this.selectList = selectList;
         this.filterMap = filterMap;

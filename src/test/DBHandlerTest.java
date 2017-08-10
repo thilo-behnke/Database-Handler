@@ -1,9 +1,8 @@
 import database.DatabaseHelper;
 import files.FileReader;
-import org.junit.After;
 import user.User;
 import user.UserBuilder;
-import user.UserMapper;
+import user.DatabaseController;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,16 +15,18 @@ import static database.Database.Table.*;
 public class DBHandlerTest {
 
     private DatabaseHelper dbHelper;
+    private DatabaseController databaseController;
 
     @Before
     @Test
     public void prepare() {
         dbHelper = DatabaseHelper.getInstance();
         dbHelper.connectToDatabase("jdbc:postgresql:", "mydb", "postgres", "admin");
+        databaseController = new DatabaseController(dbHelper);
         dbHelper.createTables(
-                UserMapper.getEntityMapping(USERS),
-                UserMapper.getEntityMapping(CUSTOMERS),
-                UserMapper.getEntityMapping(EMPLOYEES));
+                DatabaseController.getEntityMapping(USERS),
+                DatabaseController.getEntityMapping(CUSTOMERS),
+                DatabaseController.getEntityMapping(EMPLOYEES));
         Assert.assertTrue(dbHelper.checkTableStatus(USERS, CUSTOMERS, EMPLOYEES));
     }
 
@@ -39,7 +40,7 @@ public class DBHandlerTest {
                         .setRank("A").getCustomer();
         dbHelper.insertUsers(customer);
 
-        List<User> userList = dbHelper.searchUserInDB(CUSTOMERS, null);
+        List<User> userList = databaseController.searchUserInDB(CUSTOMERS, null);
         Assert.assertTrue(userList.size() == 1);
         Assert.assertTrue(userList.get(0).equals(customer));
     }
@@ -55,7 +56,7 @@ public class DBHandlerTest {
                 .setLocation("Germany").getEmployee();
         dbHelper.insertUsers(employee);
 
-        List<User> userList = dbHelper.searchUserInDB(EMPLOYEES, null);
+        List<User> userList = databaseController.searchUserInDB(EMPLOYEES, null);
         Assert.assertTrue(userList.size() == 1);
         Assert.assertTrue(userList.get(0).equals(employee));
     }

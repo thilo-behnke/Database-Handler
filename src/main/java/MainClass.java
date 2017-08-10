@@ -1,7 +1,7 @@
 import database.DatabaseHelper;
 import files.FileReader;
 import user.User;
-import user.UserMapper;
+import user.DatabaseController;
 
 import java.util.*;
 
@@ -13,9 +13,9 @@ public class MainClass {
         DatabaseHelper dbHelper = DatabaseHelper.getInstance();
         dbHelper.connectToDatabase("jdbc:postgresql:", "mydb", "postgres", "admin");
         dbHelper.createTables(
-                UserMapper.getEntityMapping(USERS),
-                UserMapper.getEntityMapping(CUSTOMERS),
-                UserMapper.getEntityMapping(EMPLOYEES));
+                DatabaseController.getEntityMapping(USERS),
+                DatabaseController.getEntityMapping(CUSTOMERS),
+                DatabaseController.getEntityMapping(EMPLOYEES));
 
         List<User> list = new ArrayList<>(FileReader.readUsersFromFile());
         list.stream().filter(x -> x instanceof User.Customer).map(x -> (User.Customer) x).forEach(dbHelper::insertUser);
