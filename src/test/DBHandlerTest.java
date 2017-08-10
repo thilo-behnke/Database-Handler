@@ -65,8 +65,8 @@ public class DBHandlerTest {
     @Test
     public void importUsersFromFile() {
         List<User> list = new ArrayList<>(FileReader.readUsersFromFile(
-                new FileReader.ReadInfo("C:\\Users\\Thilo\\Desktop\\employee_import.txt", EMPLOYEES),
-                new FileReader.ReadInfo("C:\\Users\\Thilo\\Desktop\\customer_import.txt", CUSTOMERS)
+                new FileReader.ReadInfo("src/test/files/employee_import.txt", EMPLOYEES),
+                new FileReader.ReadInfo("src/test/files/customer_import.txt", CUSTOMERS)
         ));
         list.stream().filter(x -> x instanceof User.Customer).map(x -> (User.Customer) x).forEach(dbHelper::insertUser);
         list.stream().filter(x -> x instanceof User.Employee).map(x -> (User.Employee) x).forEach(dbHelper::insertUser);
