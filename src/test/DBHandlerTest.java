@@ -1,5 +1,6 @@
 import database.DatabaseHelper;
 import files.FileReader;
+import org.junit.After;
 import user.User;
 import user.UserBuilder;
 import user.UserMapper;
@@ -17,13 +18,10 @@ public class DBHandlerTest {
     private DatabaseHelper dbHelper;
 
     @Before
+    @Test
     public void prepare() {
         dbHelper = DatabaseHelper.getInstance();
         dbHelper.connectToDatabase("jdbc:postgresql:", "mydb", "postgres", "admin");
-    }
-
-    @Test
-    public void createTablesTest() {
         dbHelper.createTables(
                 UserMapper.getEntityMapping(USERS),
                 UserMapper.getEntityMapping(CUSTOMERS),
