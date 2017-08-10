@@ -14,5 +14,7 @@ In this case it came down to an enum-centric structure.
 - Supported databases: PostgreSQL
 
 ### Planned Features
+- Complete JDoc
 - Make certain parts of the program more generic (e.g. FileReader)
+- Move functionality from DatabaseHelper to DatabaseController
 - Add Swing interface
