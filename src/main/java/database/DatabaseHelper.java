@@ -116,6 +116,7 @@ public class DatabaseHelper implements IDatabaseHelper {
         }
     }
 
+    // TODO: Move to DatabaseController
     public void insertUser(User user) {
         try {
             PreparedStatement statement = connection.prepareStatement(

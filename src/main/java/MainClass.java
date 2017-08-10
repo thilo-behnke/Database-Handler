@@ -1,7 +1,7 @@
 import database.DatabaseHelper;
 import files.FileReader;
 import user.User;
-import user.DatabaseController;
+import database.DatabaseController;
 
 import java.util.*;
 

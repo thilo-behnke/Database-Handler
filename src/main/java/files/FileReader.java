@@ -2,7 +2,7 @@ package files;
 
 import database.Database;
 import user.User;
-import user.DatabaseController;
+import database.DatabaseController;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

@@ -9,12 +9,28 @@ import java.util.stream.Collectors;
 
 import static database.Database.Types.*;
 
+/**
+ * Class that represents the structure of the database.
+ */
 public class Database {
 
-    public interface ITable {
+    /**
+     * Interface implemented by Table enum.
+     * Allows retrieval of table entity and table key.
+     */
+    private interface ITable {
 
-        User getTableEntity(List<String> attributes);
+        /**
+         * Receive an object instance of the calling table.
+         * @param attributes parameters for instantiating the object.
+         * @return created object.
+         */
+        User getEntity(List<String> attributes);
 
+        /**
+         * Return primary table key.
+         * @return primary key.
+         */
         Table.Column getTableKey();
     }
 
@@ -26,7 +42,7 @@ public class Database {
 
         USERS(null) {
             @Override
-            public User getTableEntity(List<String> attributes) {
+            public User getEntity(List<String> attributes) {
                 // TODO: throw exception?
                 return null;
             }
@@ -37,7 +53,7 @@ public class Database {
             }
         }, CUSTOMERS(USERS) {
             @Override
-            public User getTableEntity(List<String> attributes) {
+            public User getEntity(List<String> attributes) {
                 return new UserBuilder()
                         .setId(Integer.parseInt(attributes.get(0)))
                         .setName(attributes.get(1))
@@ -52,7 +68,7 @@ public class Database {
             }
         }, EMPLOYEES(USERS) {
             @Override
-            public User getTableEntity(List<String> attributes) {
+            public User getEntity(List<String> attributes) {
                 return new UserBuilder()
                         .setId(Integer.parseInt(attributes.get(0)))
                         .setName(attributes.get(1))

@@ -1,9 +1,6 @@
-package user;
+package database;
 
-import database.Database;
-import database.DatabaseEntity;
-import database.DatabaseHelper;
-import database.SearchPackage;
+import user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +38,7 @@ public class DatabaseController {
             attributes.add(attributeMap.get(Column.E_SALARY));
             attributes.add(attributeMap.get(Column.E_LOCATION));
         }
-        return table.getTableEntity(attributes);
+        return table.getEntity(attributes);
     }
 
     public List<User> searchUserInDB(Database.Table table, Map<Database.Table.Column, String> filterMap) {

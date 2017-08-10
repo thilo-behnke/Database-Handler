@@ -2,7 +2,7 @@ import database.DatabaseHelper;
 import files.FileReader;
 import user.User;
 import user.UserBuilder;
-import user.DatabaseController;
+import database.DatabaseController;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
