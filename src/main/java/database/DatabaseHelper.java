@@ -20,10 +20,12 @@ public class DatabaseHelper implements IDatabaseHelper {
     private Connection connection;
     private String db;
 
-    private DatabaseHelper() {}
+    private DatabaseHelper() {
+    }
 
     /**
      * Singleton method for receiving the DBHelper instance.
+     *
      * @return singleton object of DBHelper.
      */
     public static DatabaseHelper getInstance() {
@@ -35,9 +37,10 @@ public class DatabaseHelper implements IDatabaseHelper {
 
     /**
      * Connect to database at specified location.
-     * @param url path to database.
-     * @param db name of database.
-     * @param user access credential.
+     *
+     * @param url      path to database.
+     * @param db       name of database.
+     * @param user     access credential.
      * @param password access credential.
      */
     @Override
@@ -54,6 +57,7 @@ public class DatabaseHelper implements IDatabaseHelper {
 
     /**
      * Create tables for specified database entities.
+     *
      * @param entities list of entities.
      */
     @Override
@@ -107,8 +111,8 @@ public class DatabaseHelper implements IDatabaseHelper {
     }
 
     @Override
-    public void insertUsers(User...users){
-        for(User u : users){
+    public void insertUsers(User... users) {
+        for (User u : users) {
             insertUser(u);
         }
     }
@@ -188,7 +192,8 @@ public class DatabaseHelper implements IDatabaseHelper {
             while (resultSet.next()) {
                 Map<Column, String> attributeMap = new HashMap<>();
                 for (Database.Table.Column c : getColumns(table)) {
-                    attributeMap.put(c, resultSet.getString(c.name()));
+                    if (!c.equals(Column.C_ID) && !c.equals(Column.E_ID))
+                        attributeMap.put(c, resultSet.getString(c.name()));
                 }
                 for (Database.Table.Column c : getColumns(USERS)) {
                     attributeMap.put(c, resultSet.getString(c.name()));
@@ -205,21 +210,21 @@ public class DatabaseHelper implements IDatabaseHelper {
     private String createSelectQuery(SearchPackage searchPackage) {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ");
-        for(Iterator<Database.Table.Column> it = searchPackage.getSelectList().iterator(); it.hasNext();){
+        for (Iterator<Database.Table.Column> it = searchPackage.getSelectList().iterator(); it.hasNext(); ) {
             Column c = it.next();
             sb.append(c.name());
-            if(it.hasNext()) sb.append(", ");
+            if (it.hasNext()) sb.append(", ");
         }
         sb.append(" FROM ").append(searchPackage.getMainTable());
         if (searchPackage.getJoinTable() == null) sb.append(";");
         else {
-            for(Database.Table t : searchPackage.getJoinTable()){
+            for (Database.Table t : searchPackage.getJoinTable()) {
                 sb.append(" JOIN ").append(t).append(" ON ")
                         .append(searchPackage.getMainTable().getTableKey())
                         .append(" = ")
                         .append(t.getTableKey());
             }
-            if(searchPackage.getFilterMap() == null) sb.append(";");
+            if (searchPackage.getFilterMap() == null) sb.append(";");
             else {
                 boolean isFirst = true;
                 for (Map.Entry<Database.Table.Column, String> entry : searchPackage.getFilterMap().entrySet()) {
